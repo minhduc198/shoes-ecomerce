@@ -9,23 +9,38 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        primary: '#40BFFF',
+
         black: '#000',
+        neutral: '#223263',
+
+        blue: '#BCDDFE',
+
         white: '#fff',
-        secondary: '#F5F5F5',
-        secondary2: '#DB4444',
-        red: '#FB1314',
-        gray: {
-          light: '#FAFAFA',
-          dark: '#7F7F7F'
-        },
-        yellow: {
-          dark: '#FFAD33',
-          light: '#EEFF61'
-        },
-        green: {
-          light: '#00FF66',
-          dark: '#184A48'
-        }
+        'white-100': '#F6F7F8',
+
+        red: '#FB7181',
+
+        wheat: '#F6F6F6',
+        'wheat-100': '#e3e3e3',
+
+        'gray-25': '#C1C8CE',
+        'gray-50': '#FAFAFB',
+        'gray-100': '#9098B1'
+      },
+      spacing: {
+        26: '104px'
+      },
+      columns: {
+        '10xl': '93.75rem'
+      },
+      fontSize: {
+        sm: ['16px', '1'],
+        lg: ['20px', '1'],
+        xl: ['24px', '1']
+      },
+      backgroundImage: {
+        'hero-img': "url('/public/main_img.png')"
       }
     }
   },
@@ -33,11 +48,11 @@ module.exports = {
     plugin(function ({ addComponents, theme }) {
       addComponents({
         '.container': {
-          maxWidth: theme('columns.7xl'),
+          maxWidth: theme('columns.10xl'),
           marginLeft: 'auto',
           marginRight: 'auto',
-          paddingLeft: theme('spacing.4'),
-          paddingRight: theme('spacing.4')
+          paddingLeft: '30px',
+          paddingRight: '30px'
         }
       })
     }),
