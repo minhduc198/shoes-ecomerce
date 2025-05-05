@@ -4,7 +4,8 @@ import { Navigate, Outlet, useRoutes } from 'react-router-dom'
 import path from 'src/constants/path'
 import MainLayout from 'src/layouts/MainLayout'
 import RegisterLayout from 'src/layouts/RegisterLayout'
-import ProductList from 'src/pages/ProductList'
+import Home from 'src/pages/Home'
+import ProductPage from 'src/pages/ProductPage'
 import UserLayout from 'src/pages/User/layouts/UserLayout'
 
 const Login = lazy(() => import('../pages/Login'))
@@ -104,12 +105,22 @@ export default function useRouteElements() {
       )
     },
     {
+      path: path.product,
+      element: (
+        <MainLayout>
+          <Suspense>
+            <ProductPage />
+          </Suspense>
+        </MainLayout>
+      )
+    },
+    {
       path: '',
       index: true,
       element: (
         <MainLayout>
           <Suspense>
-            <ProductList />
+            <Home />
           </Suspense>
         </MainLayout>
       )
