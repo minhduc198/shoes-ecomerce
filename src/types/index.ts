@@ -1,25 +1,26 @@
 export interface IProduct {
-  id: number;
-  name: string;
-  rate: number;
-  review: number;
-  price: number;
-  sale_off: number;
-  category: string;
-  colors: string[];
+  id: number
+  name: string
+  rate: number
+  review: number
+  price: number
+  sale_off: number
+  category: string
+  colors: string[]
   sizes: string[]
-  quantity: number;
-    image1: string;
-    image2: string;
-    image3: string;
-    image4: string;
-    image5: string;
-    info: string;
-    comment: string;
+  quantity: number
+  image1: string
+  image2: string
+  image3: string
+  image4: string
+  image5: string
+  info: string
+  comment: string
 }
 
-export interface ICategory {category: string,
-      count: number
+export interface ICategory {
+  category: string
+  count: number
 }
 
 export interface IOptionSortBy {
@@ -27,9 +28,9 @@ export interface IOptionSortBy {
   key: string
 }
 
-export interface ProductParams {
+export interface QueryConfigParams {
   price_min?: string
-  price_max?:string 
+  price_max?: string
   color?: string
   size?: string
   name?: string
@@ -37,5 +38,5 @@ export interface ProductParams {
   sort_by?: string
   _limit?: string
   is_row?: string
-  _page?: string 
+  _page?: string
 }

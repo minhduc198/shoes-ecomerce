@@ -16,13 +16,14 @@ import eachItemUnActive from '../../assets/icons/eachItemUnActive.svg'
 import rowItemActive from '../../assets/icons/rowItemActive.svg'
 import rowItemUnActive from '../../assets/icons/rowItemUnActive.svg'
 import Pagination from 'src/component/Pagination'
+import useSearchProducts from 'src/hooks/useSearchProducts'
 
 export default function ProductPage() {
   const dispatch = useAppDispatch()
-
   const productPerformance = useSelector(productSelector)
+  const queryConfig = useQueryConfig()
+  const onSearchProducts = useSearchProducts()
 
-  const { queryConfig, setQueryConfig } = useQueryConfig()
   const isRowLayout = !!queryConfig.is_row
 
   const optionSortBy = [
@@ -61,23 +62,23 @@ export default function ProductPage() {
 
   useEffect(() => {
     dispatch(getListProduct(queryConfig))
-  }, [dispatch, JSON.stringify(queryConfig)])
+  }, [dispatch, queryConfig])
 
   const handleOptionSortBy = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value
-    setQueryConfig({ sort_by: value })
+    onSearchProducts({ sort_by: value })
   }
 
   const handleOptionShowItem = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const pageNumber = e.target.value
-    setQueryConfig({ _limit: pageNumber })
+    onSearchProducts({ _limit: pageNumber })
   }
 
   const handleShowItemType = (type: 'eachItem' | 'rowItem') => {
     if (type === 'rowItem') {
-      setQueryConfig({ is_row: 'active' })
+      onSearchProducts({ is_row: 'active' })
     } else {
-      setQueryConfig({ is_row: undefined })
+      onSearchProducts({ is_row: undefined })
     }
   }
 

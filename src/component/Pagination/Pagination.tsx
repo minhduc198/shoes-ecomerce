@@ -1,4 +1,5 @@
 import useQueryConfig from 'src/hooks/useQueryConfig'
+import useSearchProducts from 'src/hooks/useSearchProducts'
 
 interface Props {
   totalProduct: number
@@ -6,7 +7,8 @@ interface Props {
 }
 
 export default function Pagination({ siblingNumber = 2, totalProduct }: Props) {
-  const { queryConfig, setQueryConfig } = useQueryConfig()
+  const queryConfig = useQueryConfig()
+  const onSearchProducts = useSearchProducts()
 
   const currentSelectPage = queryConfig._page ?? 1
   const siblingLeft = Number(currentSelectPage) - siblingNumber
@@ -16,7 +18,7 @@ export default function Pagination({ siblingNumber = 2, totalProduct }: Props) {
   const totalPage = Math.ceil(totalProduct / +limitProductPerPage)
 
   const handleCurrentPage = (page: number) => {
-    setQueryConfig({ _page: `${page}` })
+    onSearchProducts({ _page: `${page}` })
   }
 
   const handlePagination = (page: number) => {
