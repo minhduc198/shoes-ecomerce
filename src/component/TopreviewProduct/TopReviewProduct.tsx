@@ -1,5 +1,5 @@
 import { IProduct } from 'src/types'
-import { formatCurrency } from '../FormatCurrency/FormatCurrency'
+import { formatCurrency } from 'src/utils'
 
 interface Props {
   product: IProduct

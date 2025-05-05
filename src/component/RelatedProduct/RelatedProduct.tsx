@@ -1,6 +1,6 @@
 import { IProduct } from 'src/types'
-import { formatCurrency } from '../FormatCurrency/FormatCurrency'
 import RateProduct from '../RateProduct'
+import { formatCurrency } from 'src/utils'
 
 interface Props {
   product: IProduct

@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import path from 'src/constants/path'
+import useQueryConfig from 'src/hooks/useQueryConfig'
 import useSearchParam from 'src/hooks/useSearchParam'
 import { itemCategorySelector } from 'src/store/product.selector'
 import { getCategory } from 'src/store/product.slice'
@@ -14,6 +15,9 @@ const colors = ['#006CFF', '#FC3E39', '#171717', '#FFF600', '#FF00B4', '#EFDFDF'
 
 export default function Sidebar() {
   const dispatch = useAppDispatch()
+
+  const { setQueryConfig } = useQueryConfig()
+
   const items = useSelector(itemCategorySelector)
 
   const priceRef = useRef<HTMLInputElement>(null)
@@ -45,8 +49,9 @@ export default function Sidebar() {
   }
 
   const handleSubmit = () => {
-    // const params = new URLSearchParams({ ...searchParams,  }).toString()
     const { priceMin, priceMax } = prices
+
+    setQueryConfig({ price_max: priceMax, price_min: priceMin })
 
     if ((priceMin && priceMax && Number(priceMin) > Number(priceMax)) || (!priceMin && !priceMax)) {
       setIsErrorPrice(true)
@@ -76,7 +81,6 @@ export default function Sidebar() {
           ))}
         </div>
       </div>
-
       <div className='bg-gray-400 px-4 py-4'>
         <div className='text-[18x] font-medium'>PRICES</div>
         <div className='mt-[25px] flex gap-2 mb-4'>
@@ -98,7 +102,6 @@ export default function Sidebar() {
           Search Price
         </button>
       </div>
-
       <div className='bg-gray-400 px-4 py-4'>
         <div className='font-medium text-[18px]'>Colors</div>
         <div className='mt-5 flex gap-[17px]'>

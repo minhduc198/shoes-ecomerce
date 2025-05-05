@@ -91,7 +91,12 @@ export default function Home() {
         <div className='flex flex-col text-white max-w-[570px]'>
           <div className='text-[55px] font-medium'>Adidas Men Running Sneakers</div>
           <div className='mt-[23px] text-[24px]'>Performance and design. Taken right to the edge.</div>
-          <div className='mt-3 text-[20px] font-semibold border-b-white border-b-[3px] w-fit'>SHOP NOW</div>
+          <Link
+            to={path.product}
+            className='mt-3 text-[20px] font-semibold border-b-white border-b-[3px] cursor-pointer w-fit'
+          >
+            SHOP NOW
+          </Link>
         </div>
 
         <div className=''>

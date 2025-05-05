@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import http from './product.api'
-import { ICategory, IProduct } from 'src/types'
+import { ProductParams, ICategory, IProduct } from 'src/types'
 
 interface InitialState {
   products: IProduct[]
@@ -26,8 +26,10 @@ const initialState: InitialState = {
 
 export const getListProduct = createAsyncThunk(
   'product/getListProduct',
-  async () => {
-    const response = await http.get("products")
+  async (params: ProductParams) => {
+    const response = await http.get("products", {
+      params
+    })
     return response.data
   }
 ) 

@@ -21,3 +21,21 @@ export interface IProduct {
 export interface ICategory {category: string,
       count: number
 }
+
+export interface IOptionSortBy {
+  value: string
+  key: string
+}
+
+export interface ProductParams {
+  price_min?: string
+  price_max?:string 
+  color?: string
+  size?: string
+  name?: string
+  category?: string
+  sort_by?: string
+  _limit?: string
+  is_row?: string
+  _page?: string 
+}
