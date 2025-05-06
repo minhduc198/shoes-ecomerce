@@ -3,24 +3,25 @@ import { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import OptionSelect from 'src/component/CustomSelect'
+import Pagination from 'src/component/Pagination'
 import ProductItem from 'src/component/ProductItem'
 import ProductItemRow from 'src/component/ProductItemRow'
 import Sidebar from 'src/component/Sidebar'
 import path from 'src/constants/path'
 import useQueryConfig from 'src/hooks/useQueryConfig'
-import { productSelector } from 'src/store/product.selector'
-import { getListProduct } from 'src/store/product.slice'
+import useSearchProducts from 'src/hooks/useSearchProducts'
+import { productSelector, totalItemsSelector } from 'src/store/product.selector'
+import { getCategory, getListProduct } from 'src/store/product.slice'
 import { useAppDispatch } from 'src/store/store'
 import eachItemActive from '../../assets/icons/eachItemActive.svg'
 import eachItemUnActive from '../../assets/icons/eachItemUnActive.svg'
 import rowItemActive from '../../assets/icons/rowItemActive.svg'
 import rowItemUnActive from '../../assets/icons/rowItemUnActive.svg'
-import Pagination from 'src/component/Pagination'
-import useSearchProducts from 'src/hooks/useSearchProducts'
 
 export default function ProductPage() {
   const dispatch = useAppDispatch()
-  const productPerformance = useSelector(productSelector)
+  const productList = useSelector(productSelector)
+  const totalItems = useSelector(totalItemsSelector)
   const queryConfig = useQueryConfig()
   const onSearchProducts = useSearchProducts()
 
@@ -62,7 +63,11 @@ export default function ProductPage() {
 
   useEffect(() => {
     dispatch(getListProduct(queryConfig))
-  }, [dispatch, queryConfig])
+  }, [dispatch, JSON.stringify(queryConfig)])
+
+  useEffect(() => {
+    dispatch(getCategory())
+  }, [])
 
   const handleOptionSortBy = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value
@@ -106,7 +111,7 @@ export default function ProductPage() {
           </div>
           <div className='bg-gray-400 flex justify-between items-center'>
             <div className='py-[11px] pl-[22px] flex items-center'>
-              <div className='mr-[47px]'>{productPerformance.length} items</div>
+              <div className='mr-[47px]'>{productList.length} items</div>
 
               <div className='flex gap-3 items-center'>
                 <div>Sort By</div>
@@ -143,7 +148,7 @@ export default function ProductPage() {
               'grid-cols-3': !isRowLayout
             })}
           >
-            {productPerformance.map((product) =>
+            {productList.map((product) =>
               isRowLayout ? (
                 <ProductItemRow key={product.id} product={product} />
               ) : (
@@ -152,7 +157,7 @@ export default function ProductPage() {
             )}
           </div>
 
-          <Pagination totalProduct={140} />
+          <Pagination totalItems={totalItems} />
         </div>
       </div>
     </div>

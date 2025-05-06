@@ -1,7 +1,7 @@
 import classNames from 'classnames'
 import { useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { Link } from 'react-router-dom'
+import { createSearchParams, Link } from 'react-router-dom'
 import ProductItem from 'src/component/ProductItem'
 import RelatedProduct from 'src/component/RelatedProduct'
 import path from 'src/constants/path'
@@ -50,7 +50,7 @@ export default function Home() {
             <Link
               to={{
                 pathname: path.home,
-                search: new URLSearchParams({ category: '' }).toString()
+                search: createSearchParams({ category: '' }).toString()
               }}
               className={classNames('cursor-pointer hover:text-primary transition-all duration-100 border-b-2', {
                 'text-primary border-b-primary': !category,
@@ -65,7 +65,7 @@ export default function Home() {
                   key={item.category}
                   to={{
                     pathname: path.home,
-                    search: new URLSearchParams({ category: item.category }).toString()
+                    search: createSearchParams({ category: item.category }).toString()
                   }}
                   className={classNames('cursor-pointer hover:text-primary transition-all duration-100 border-b-2', {
                     'text-primary border-b-primary': category === item.category,

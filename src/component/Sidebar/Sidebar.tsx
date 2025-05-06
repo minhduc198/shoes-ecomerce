@@ -2,13 +2,13 @@
 import classNames from 'classnames'
 import { useEffect, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { Link } from 'react-router-dom'
-import path from 'src/constants/path'
+import useQueryConfig from 'src/hooks/useQueryConfig'
 import useSearchParam from 'src/hooks/useSearchParam'
 import useSearchProducts from 'src/hooks/useSearchProducts'
 import { itemCategorySelector } from 'src/store/product.selector'
 import { getCategory } from 'src/store/product.slice'
 import { useAppDispatch } from 'src/store/store'
+import { ICategory } from 'src/types'
 import InputNumber from '../InputNumber'
 
 const colors = ['#006CFF', '#FC3E39', '#171717', '#FFF600', '#FF00B4', '#EFDFDF']
@@ -17,6 +17,8 @@ export default function Sidebar() {
   const dispatch = useAppDispatch()
 
   const onSearchProducts = useSearchProducts()
+
+  const queryConfig = useQueryConfig()
 
   const items = useSelector(itemCategorySelector)
 
@@ -51,14 +53,29 @@ export default function Sidebar() {
   const handleSubmit = () => {
     const { priceMin, priceMax } = prices
 
-    onSearchProducts({ price_max: priceMax, price_min: priceMin })
-
     if ((priceMin && priceMax && Number(priceMin) > Number(priceMax)) || (!priceMin && !priceMax)) {
       setIsErrorPrice(true)
       priceRef.current?.focus()
     } else {
       setIsErrorPrice(false)
+      onSearchProducts({ price_max: priceMax, price_min: priceMin })
     }
+  }
+
+  const handleCategory = (item: ICategory) => {
+    console.log('{item}', { item, queryConfig })
+
+    onSearchProducts({
+      category: queryConfig.category && item.category === queryConfig.category ? '' : item.category
+    })
+  }
+
+  const handleColor = (color: string) => {
+    const colorChange = color.replace('#', '')
+
+    onSearchProducts({
+      searchColor: queryConfig.searchColor && colorChange === queryConfig.searchColor ? '' : colorChange
+    })
   }
 
   return (
@@ -66,19 +83,18 @@ export default function Sidebar() {
       <div className='bg-gray-400 px-4 py-4'>
         <div className='text-[18x] font-medium'>Hot Deals</div>
         <div className='flex flex-col mt-[25px] gap-[18px]'>
-          {items.map((item) => (
-            <Link
-              key={item.category}
-              to={{
-                pathname: path.product,
-                search: new URLSearchParams({ ...searchParams, category: item.category }).toString()
-              }}
-              className={`flex justify-between items-center text-[18px] cursor-pointer hover:text-primary transition-all duration-200 ${searchParams.category === item.category ? 'text-primary' : ''}`}
-            >
-              <div>{item.category}</div>
-              <div>{item.count}</div>
-            </Link>
-          ))}
+          {items.map((item) => {
+            return (
+              <div
+                key={item.category}
+                onClick={() => handleCategory(item)}
+                className={`flex justify-between items-center text-[18px] cursor-pointer hover:text-primary transition-all duration-200 ${searchParams.category === item.category ? 'text-primary' : ''}`}
+              >
+                <div>{item.category}</div>
+                <div>{item.count}</div>
+              </div>
+            )
+          })}
         </div>
       </div>
       <div className='bg-gray-400 px-4 py-4'>
@@ -113,16 +129,13 @@ export default function Sidebar() {
               }}
               className='w-[26px] h-[26px] bg-transparent rounded-full relative top-0 left-0 border-[2px] border-transparent'
             >
-              <Link
-                to={{
-                  pathname: path.product,
-                  search: new URLSearchParams({ ...searchParams, searchColor: color.replace('#', '') }).toString()
-                }}
+              <div
+                onClick={() => handleColor(color)}
                 style={{ backgroundColor: color }}
                 className={classNames(
                   `w-4 h-4 rounded-full cursor-pointer absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]`
                 )}
-              ></Link>
+              ></div>
             </div>
           ))}
         </div>

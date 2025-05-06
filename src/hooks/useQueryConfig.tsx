@@ -9,7 +9,7 @@ export default function useQueryConfig() {
     {
       price_min: searchParams.price_min,
       price_max: searchParams.price_max,
-      color: searchParams.color,
+      searchColor: searchParams.searchColor,
       size: searchParams.size,
       name: searchParams.name,
       category: searchParams.category,
