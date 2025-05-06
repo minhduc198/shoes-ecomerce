@@ -5,6 +5,7 @@ import { QueryConfigParams, ICategory, IProduct } from 'src/types'
 
 interface InitialState {
   products: IProduct[]
+  totalItems: number
   isLoading: boolean
   productDetail: IProduct
   topReviewProducts: IProduct[]
@@ -15,6 +16,7 @@ interface InitialState {
 
 const initialState: InitialState = {
   products: [],
+  totalItems: 0,
   isLoading: false,
   productDetail: {} as IProduct,
   topReviewProducts: [],
@@ -61,24 +63,27 @@ export const productSlice = createSlice({
 
   extraReducers: (builder) => {
     builder.addCase(getListProduct.fulfilled, (state, action) => {
-      state.products = action.payload
+      state.products = action.payload.data
       state.isLoading = false
+      state.totalItems = action.payload.totalItems
     })
-    builder.addCase(getListProduct.pending, (state) => {
+    .addCase(getListProduct.pending, (state) => {
       state.isLoading = true
     })
-    builder.addCase(getListProduct.rejected, (state) => {
-      state.isLoading = true
+    .addCase(getListProduct.rejected, (state) => {
+      state.products = []
+      state.isLoading = false
+      state.totalItems = 0
     })
 
     builder.addCase(getProductDetail.fulfilled, (state, action) => {
       state.productDetail = action.payload
       state.isLoading = false
     })
-    builder.addCase(getProductDetail.pending, (state) => {
+    .addCase(getProductDetail.pending, (state) => {
       state.isLoading = true
     })
-    builder.addCase(getProductDetail.rejected, (state) => {
+    .addCase(getProductDetail.rejected, (state) => {
       state.isLoading = false
     })
 

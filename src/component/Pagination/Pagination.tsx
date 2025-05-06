@@ -2,11 +2,11 @@ import useQueryConfig from 'src/hooks/useQueryConfig'
 import useSearchProducts from 'src/hooks/useSearchProducts'
 
 interface Props {
-  totalProduct: number
+  totalItems: number
   siblingNumber?: number
 }
 
-export default function Pagination({ siblingNumber = 2, totalProduct }: Props) {
+export default function Pagination({ siblingNumber = 2, totalItems }: Props) {
   const queryConfig = useQueryConfig()
   const onSearchProducts = useSearchProducts()
 
@@ -15,22 +15,33 @@ export default function Pagination({ siblingNumber = 2, totalProduct }: Props) {
   const siblingRight = Number(currentSelectPage) + siblingNumber
 
   const limitProductPerPage = queryConfig._limit ?? '9'
-  const totalPage = Math.ceil(totalProduct / +limitProductPerPage)
+  const totalPage = Math.ceil(totalItems / +limitProductPerPage)
 
   const handleCurrentPage = (page: number) => {
     onSearchProducts({ _page: `${page}` })
   }
 
   const handlePagination = (page: number) => {
-    if (page <= 2 || page >= totalPage - 1) {
-      return page
+    if (page <= 2 || page >= totalPage - 1 || (siblingLeft <= page && page <= siblingRight)) {
+      return (
+        <div
+          key={page}
+          className={`h-full px-[25px] cursor-pointer py-4 ${currentSelectPage == page ? 'text-white bg-primary' : ''} `}
+          onClick={() => handleCurrentPage(page)}
+        >
+          {page}
+        </div>
+      )
     }
 
-    if (siblingLeft <= page && page <= siblingRight) {
-      return page
-    }
-
-    return '...'
+    return (
+      <div
+        key={page}
+        className={`px-[25px] py-4 ${siblingLeft - 1 === page || siblingRight + 1 === page ? 'block' : 'hidden'}`}
+      >
+        ...
+      </div>
+    )
   }
 
   return (
@@ -38,15 +49,7 @@ export default function Pagination({ siblingNumber = 2, totalProduct }: Props) {
       <div className='flex'>
         {Array(totalPage)
           .fill(0)
-          .map((_, pos) => (
-            <div
-              key={pos}
-              className={`h-full px-[25px] cursor-pointer py-4 ${currentSelectPage == pos + 1 ? 'text-white bg-primary' : ''}`}
-              onClick={() => handleCurrentPage(pos + 1)}
-            >
-              {handlePagination(pos + 1)}
-            </div>
-          ))}
+          .map((_, pos) => handlePagination(pos + 1))}
       </div>
     </div>
   )

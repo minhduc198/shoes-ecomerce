@@ -2,6 +2,7 @@ import { createSearchParams, useNavigate } from 'react-router-dom'
 import path from 'src/constants/path'
 import useQueryConfig from './useQueryConfig'
 import { QueryConfigParams } from 'src/types'
+import omitBy from 'lodash/omitBy'
 
 export default function useSearchProducts() {
   const queryConfig = useQueryConfig()
@@ -9,8 +10,10 @@ export default function useSearchProducts() {
 
   const onSearchProducts = (value: { [key in keyof QueryConfigParams]: string }) => {
     navigate({
-      pathname: path.home,
-      search: createSearchParams({ ...queryConfig, ...value }).toString()
+      pathname: path.product,
+      search: createSearchParams(
+        omitBy({ ...queryConfig, ...value, _page: value._page ? value._page : queryConfig._page ? '1' : '' }, (i) => !i)
+      ).toString()
     })
   }
 

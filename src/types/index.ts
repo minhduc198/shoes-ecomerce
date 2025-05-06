@@ -28,15 +28,17 @@ export interface IOptionSortBy {
   key: string
 }
 
-export interface QueryConfigParams {
-  price_min?: string
-  price_max?: string
-  color?: string
-  size?: string
-  name?: string
-  category?: string
-  sort_by?: string
-  _limit?: string
-  is_row?: string
-  _page?: string
+export interface QueryConfig {
+  price_min: string
+  price_max: string
+  searchColor: string
+  size: string
+  name: string
+  category: string 
+  sort_by: string
+  _limit: string
+  is_row: string
+  _page: string
 }
+
+export type QueryConfigParams = Partial<QueryConfig>
