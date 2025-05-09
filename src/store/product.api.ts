@@ -1,13 +1,40 @@
-import axios, { AxiosInstance } from "axios";
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { ICategory, IProduct, IProductList, QueryConfigParams } from 'src/types';
 
-class Http {
-  instance: AxiosInstance
-  constructor() {
-    this.instance = axios.create({
-      baseURL: "http://localhost:4000"
+export const productApi = createApi(
+  {
+    reducerPath: 'products',
+    baseQuery: fetchBaseQuery({baseUrl: "http://localhost:4000"}),
+    tagTypes: ['Post'],
+    endpoints: (builder) => ({
+      getProductDetail : builder.query<IProduct, string>({
+        query: (id: string) => `products/${id}`
+      }),
+      getListProduct: builder.query<IProductList, QueryConfigParams>({
+        query: (params: QueryConfigParams) => ({
+          url: 'products',
+          params
+        }),
+        providesTags: ['Post']
+      }),
+      getTopReviewProduct: builder.query<IProduct[], string>({
+        query: (category: string) => `top-reviewed-products?category=${category}`
+      }),
+      getTopSaleProduct: builder.query<IProduct[], void>({
+        query: () => 'top-sale-products'
+      }),
+      getCategory : builder.query<ICategory[], void>({
+        query: () => 'category-count'
+      }),
+      getRelatedProduct: builder.query<IProduct[], string>({
+        query: (id: string) => `related-products/${id}`
+      }),
+      
     })
   }
-}
+)
 
-const http = new Http().instance;
-export default http
+export const {useGetTopReviewProductQuery, useGetCategoryQuery, useGetRelatedProductQuery, useGetTopSaleProductQuery, useGetListProductQuery} = productApi
+
+
+

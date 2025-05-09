@@ -1,26 +1,20 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import classNames from 'classnames'
-import { useEffect, useRef, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useRef, useState } from 'react'
 import useQueryConfig from 'src/hooks/useQueryConfig'
 import useSearchParam from 'src/hooks/useSearchParam'
 import useSearchProducts from 'src/hooks/useSearchProducts'
-import { itemCategorySelector } from 'src/store/product.selector'
-import { getCategory } from 'src/store/product.slice'
-import { useAppDispatch } from 'src/store/store'
+import { useGetCategoryQuery } from 'src/store/product.api'
 import { ICategory } from 'src/types'
 import InputNumber from '../InputNumber'
 
 const colors = ['#006CFF', '#FC3E39', '#171717', '#FFF600', '#FF00B4', '#EFDFDF']
 
 export default function Sidebar() {
-  const dispatch = useAppDispatch()
-
   const onSearchProducts = useSearchProducts()
-
   const queryConfig = useQueryConfig()
 
-  const items = useSelector(itemCategorySelector)
+  const { data: items } = useGetCategoryQuery()
 
   const priceRef = useRef<HTMLInputElement>(null)
 
@@ -34,10 +28,6 @@ export default function Sidebar() {
   const regexNumber = /^\s*(?:\d+|\.\d+|\d+\.\d+)\s*$/
 
   const searchParams = useSearchParam()
-
-  useEffect(() => {
-    dispatch(getCategory())
-  }, [dispatch])
 
   const handleOnChange = (type: 'priceMin' | 'priceMax') => (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
@@ -63,8 +53,6 @@ export default function Sidebar() {
   }
 
   const handleCategory = (item: ICategory) => {
-    console.log('{item}', { item, queryConfig })
-
     onSearchProducts({
       category: queryConfig.category && item.category === queryConfig.category ? '' : item.category
     })
@@ -83,7 +71,7 @@ export default function Sidebar() {
       <div className='bg-gray-400 px-4 py-4'>
         <div className='text-[18x] font-medium'>Hot Deals</div>
         <div className='flex flex-col mt-[25px] gap-[18px]'>
-          {items.map((item) => {
+          {items?.map((item) => {
             return (
               <div
                 key={item.category}

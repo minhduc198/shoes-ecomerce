@@ -41,4 +41,9 @@ export interface QueryConfig {
   _page: string
 }
 
+export interface IProductList {
+  data: IProduct[]
+  totalItems: number
+}
+
 export type QueryConfigParams = Partial<QueryConfig>

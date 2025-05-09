@@ -1,6 +1,4 @@
 import classNames from 'classnames'
-import { useEffect } from 'react'
-import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import OptionSelect from 'src/component/CustomSelect'
 import Pagination from 'src/component/Pagination'
@@ -10,20 +8,18 @@ import Sidebar from 'src/component/Sidebar'
 import path from 'src/constants/path'
 import useQueryConfig from 'src/hooks/useQueryConfig'
 import useSearchProducts from 'src/hooks/useSearchProducts'
-import { productSelector, totalItemsSelector } from 'src/store/product.selector'
-import { getCategory, getListProduct } from 'src/store/product.slice'
-import { useAppDispatch } from 'src/store/store'
+import { useGetListProductQuery } from 'src/store/product.api'
 import eachItemActive from '../../assets/icons/eachItemActive.svg'
 import eachItemUnActive from '../../assets/icons/eachItemUnActive.svg'
 import rowItemActive from '../../assets/icons/rowItemActive.svg'
 import rowItemUnActive from '../../assets/icons/rowItemUnActive.svg'
 
 export default function ProductPage() {
-  const dispatch = useAppDispatch()
-  const productList = useSelector(productSelector)
-  const totalItems = useSelector(totalItemsSelector)
   const queryConfig = useQueryConfig()
   const onSearchProducts = useSearchProducts()
+
+  const { data: productList } = useGetListProductQuery(queryConfig ?? '')
+  const totalItems = productList?.totalItems ?? 0
 
   const isRowLayout = !!queryConfig.is_row
 
@@ -60,14 +56,6 @@ export default function ProductPage() {
       value: '21'
     }
   ]
-
-  useEffect(() => {
-    dispatch(getListProduct(queryConfig))
-  }, [dispatch, JSON.stringify(queryConfig)])
-
-  useEffect(() => {
-    dispatch(getCategory())
-  }, [])
 
   const handleOptionSortBy = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value
@@ -111,7 +99,7 @@ export default function ProductPage() {
           </div>
           <div className='bg-gray-400 flex justify-between items-center'>
             <div className='py-[11px] pl-[22px] flex items-center'>
-              <div className='mr-[47px]'>{productList.length} items</div>
+              <div className='mr-[47px]'>{productList?.data.length} items</div>
 
               <div className='flex gap-3 items-center'>
                 <div>Sort By</div>
@@ -148,7 +136,7 @@ export default function ProductPage() {
               'grid-cols-3': !isRowLayout
             })}
           >
-            {productList.map((product) =>
+            {productList?.data?.map((product) =>
               isRowLayout ? (
                 <ProductItemRow key={product.id} product={product} />
               ) : (
