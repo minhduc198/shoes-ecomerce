@@ -1,46 +1,29 @@
 import classNames from 'classnames'
-import { useEffect } from 'react'
-import { useSelector } from 'react-redux'
 import { createSearchParams, Link } from 'react-router-dom'
 import ProductItem from 'src/component/ProductItem'
 import RelatedProduct from 'src/component/RelatedProduct'
+import TopReviewProduct from 'src/component/TopReviewProduct'
 import path from 'src/constants/path'
 import useSearchParam from 'src/hooks/useSearchParam'
-import { itemCategorySelector, topReviewProductSelector, topSaleProduct } from 'src/store/product.selector'
-import { getCategory, getTopReviewProduct, getTopSaleProduct } from 'src/store/product.slice'
-import { useAppDispatch } from 'src/store/store'
+import { useGetCategoryQuery, useGetTopReviewProductQuery, useGetTopSaleProductQuery } from 'src/store/product.api'
 import { IProduct } from 'src/types'
-import shipping from '../../assets/icons/shipping.svg'
-import refund from '../../assets/icons/refund.svg'
-import support from '../../assets/icons/support.svg'
 import nike from '../../assets/icons/Nike_logo.svg'
 import figma from '../../assets/icons/figma-logo.svg'
 import kronos from '../../assets/icons/kronos.svg'
-import TopReviewProduct from 'src/component/TopreviewProduct'
+import refund from '../../assets/icons/refund.svg'
+import shipping from '../../assets/icons/shipping.svg'
+import support from '../../assets/icons/support.svg'
 
 export default function Home() {
-  const dispatch = useAppDispatch()
-  const topReviewItems = useSelector(topReviewProductSelector)
-  const categories = useSelector(itemCategorySelector)
-  const topSales = useSelector(topSaleProduct)
-
   const { category } = useSearchParam()
-
-  useEffect(() => {
-    dispatch(getCategory())
-    dispatch(getTopSaleProduct())
-  }, [dispatch])
-
-  useEffect(() => {
-    dispatch(getTopReviewProduct(category))
-  }, [dispatch, category])
+  const { data: topReviewItems } = useGetTopReviewProductQuery(category ?? '')
+  const { data: topSales } = useGetTopSaleProductQuery()
+  const { data: categoryData } = useGetCategoryQuery()
 
   return (
     <div className='container mt-[64px]'>
       <div className='px-[40px] md:px-[60px] lg:px-[80px] flex justify-center'>
-        {topSales.map((item) => (
-          <TopReviewProduct key={item.id} product={item} />
-        ))}
+        {topSales?.map((item) => <TopReviewProduct key={item.id} product={item} />)}
       </div>
 
       <div className='px-[40px] md:px-[60px] lg:px-[80px] '>
@@ -59,8 +42,8 @@ export default function Home() {
             >
               All
             </Link>
-            {categories.length &&
-              categories.map((item) => (
+            {categoryData?.length &&
+              categoryData.map((item) => (
                 <Link
                   key={item.category}
                   to={{
@@ -76,7 +59,7 @@ export default function Home() {
                 </Link>
               ))}
           </div>
-          {topReviewItems.length && (
+          {topReviewItems?.length && (
             <div className='grid grid-cols-1 gap-9 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4'>
               {topReviewItems.map((product: IProduct) => (
                 <ProductItem key={product.id} product={product} />
@@ -180,9 +163,7 @@ export default function Home() {
 
       <div className='mt-[110px] text-[35px] font-semibold text-center'>FEATURED PRODUCTS</div>
       <div className='mt-[72px] px-[40px] flex flex-col items-center justify-between gap-[30px] flex-wrap md:px-[60px] md:flex-row lg:px-[80px] md:justify-start xl:px-[140px]'>
-        {topReviewItems.slice(0, 3).map((item: IProduct) => (
-          <RelatedProduct key={item.id} product={item} />
-        ))}
+        {topReviewItems?.slice(0, 3).map((item: IProduct) => <RelatedProduct key={item.id} product={item} />)}
       </div>
       <div className='mt-[100px] flex justify-center h-[64px]'>
         <div className='border-blue-100 border-t-[2px] border-b-[2px] border-l-[2px] rounded-l-[2px] rounded-bl-[2px] px-[21px] w-[208px] flex items-center md:w-[308px] lg:w-[408px] xl:w-[508px]'>
