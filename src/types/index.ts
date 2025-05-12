@@ -41,7 +41,7 @@ export interface QueryConfig {
   _page: string
 }
 
-export interface IProductList {
+export interface IProductListResponse {
   data: IProduct[]
   totalItems: number
 }

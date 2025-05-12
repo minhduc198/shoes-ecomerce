@@ -18,7 +18,7 @@ export default function ProductPage() {
   const queryConfig = useQueryConfig()
   const onSearchProducts = useSearchProducts()
 
-  const { data: productList } = useGetListProductQuery(queryConfig ?? '')
+  const { data: productList } = useGetListProductQuery(queryConfig)
   const totalItems = productList?.totalItems ?? 0
 
   const isRowLayout = !!queryConfig.is_row

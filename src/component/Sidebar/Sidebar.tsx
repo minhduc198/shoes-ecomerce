@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import classNames from 'classnames'
-import { useRef, useState } from 'react'
+import debounce from 'lodash/debounce'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import useQueryConfig from 'src/hooks/useQueryConfig'
 import useSearchParam from 'src/hooks/useSearchParam'
 import useSearchProducts from 'src/hooks/useSearchProducts'
@@ -19,15 +20,45 @@ export default function Sidebar() {
   const priceRef = useRef<HTMLInputElement>(null)
 
   const [prices, setPrices] = useState({
-    priceMin: '',
-    priceMax: ''
+    priceMin: queryConfig.price_min,
+    priceMax: queryConfig.price_max
   })
+
+  const [searchName, setSearchName] = useState(queryConfig.name)
+
+  const debounceSearch = useMemo(() => debounce((name: string) => onSearchProducts({ name }), 300), [])
+
+  useEffect(() => {
+    return () => {
+      debounceSearch.cancel()
+    }
+  }, [debounceSearch])
+
+  useEffect(() => {
+    setSearchName(queryConfig.name || '')
+  }, [queryConfig.name])
+
+  useEffect(() => {
+    setPrices((prev) => ({
+      ...prev,
+      priceMin: queryConfig.price_min,
+      priceMax: queryConfig.price_max
+    }))
+
+    setIsErrorPrice(false)
+  }, [JSON.stringify(queryConfig)])
 
   const [isErrorPrice, setIsErrorPrice] = useState(false)
 
   const regexNumber = /^\s*(?:\d+|\.\d+|\d+\.\d+)\s*$/
 
   const searchParams = useSearchParam()
+
+  const handleOnSearchName = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const name = e.target.value
+    setSearchName(name)
+    debounceSearch(name)
+  }
 
   const handleOnChange = (type: 'priceMin' | 'priceMax') => (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
@@ -68,6 +99,16 @@ export default function Sidebar() {
 
   return (
     <div className='w-[270px] flex flex-col gap-y-[30px]'>
+      <div className='bg-gray-400 p-4'>
+        <input
+          type='text'
+          placeholder='Search...'
+          className='w-full outline-none p-1 placeholder-gray-100'
+          onChange={handleOnSearchName}
+          value={searchName}
+        />
+      </div>
+
       <div className='bg-gray-400 px-4 py-4'>
         <div className='text-[18x] font-medium'>Hot Deals</div>
         <div className='flex flex-col mt-[25px] gap-[18px]'>
